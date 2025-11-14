@@ -24,9 +24,9 @@ from time import sleep
 ############################################
 # testing enviroment (comment in prd env) ##
 ############################################
-zession.username = 'r3nt0n'               ##
-zession.password = 'password'             ##
-zession.remote_host = 'localhost:8080'    ##
+# zession.username = 'r3nt0n'               ##
+# zession.password = 'password'             ##
+# zession.remote_host = 'localhost:8080'    ##
 ############################################
 
 
