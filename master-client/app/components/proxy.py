@@ -108,8 +108,9 @@ class Proxy:
     def get_socks5_session(self, host=None, port=9050):
         s = requests.session()
         # Tor uses the 9050 port as the default socks port
-        s.proxies = {'http': 'socks5://{}:{}'.format(host, port),
-                     'https': 'socks5://{}:{}'.format(host, port)}
+        # Support for Tor v3 onion services (.onion addresses)
+        s.proxies = {'http': 'socks5h://{}:{}'.format(host, port),
+                     'https': 'socks5h://{}:{}'.format(host, port)}
         user_agent = self.pick_user_agent()
         s.headers.update({'User-Agent': user_agent})
         self.host = host
