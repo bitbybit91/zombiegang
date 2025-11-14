@@ -39,6 +39,7 @@ tmp/
 config_local.py
 .env
 *.env
+!.env.example
 
 # Distribution / packaging
 dist/
