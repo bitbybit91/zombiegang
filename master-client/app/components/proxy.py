@@ -129,8 +129,8 @@ class Proxy:
                 if 'countryCode' in response:
                     self.country = response['countryCode']
                 return self.current_ip
-        except:
-            self.error = "error trying to get actual ip"
+        except Exception as e:
+            self.error = f"error trying to get actual ip: {e}"
             self.current_ip = None
             return False
 
