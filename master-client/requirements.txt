@@ -1,3 +1,4 @@
 requests
-flask
-flask-wtf
+requests[socks]
+python-telegram-bot==20.7
+stem

@@ -20,16 +20,20 @@ class Data:
             encoded_json_value = json_value.encode()
             b64_value = b64encode(encoded_json_value)
             return b64_value
-        except:
+        except (TypeError, ValueError, AttributeError) as e:
+            from app import logger
+            logger.log(f'Error packing value: {e}', 'ERROR')
             return False
 
     def unpack_value(self, b64_value):
         try:
             encoded_json_value = b64decode(b64_value)
             json_value = encoded_json_value.decode()
-            value = json.load(json_value)
+            value = json.loads(json_value)  # Changed json.load to json.loads
             return value
-        except:
+        except (TypeError, ValueError, AttributeError) as e:
+            from app import logger
+            logger.log(f'Error unpacking value: {e}', 'ERROR')
             return False
 
     def merge_values(self, value_a, value_b):
